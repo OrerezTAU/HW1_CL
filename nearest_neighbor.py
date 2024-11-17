@@ -20,7 +20,7 @@ train_labels = labels[idx[:10000]]
 test = data[idx[10000:],:].astype('int')
 test_labels = labels[idx[10000:]]
 
-num_label_categories = 10
+num_label_categories = 5
 
 
 def knn_algo (train_images, labels_vec, query_img, k):
@@ -58,9 +58,6 @@ def test_knn():
     """
     Test the k-nearest neighbors algorithm
     """
-
-    train2 = data[:8000,:].astype('int')
-    train2_labels = train_labels[:8000]
     # Initialize counters
     correct_predictions = 0
 
@@ -73,7 +70,7 @@ def test_knn():
         true_label = int(test_labels[i])
 
         # Call the k-NN function
-        predicted_label = knn_algo(train2, train2_labels, query_image, k)
+        predicted_label = knn_algo(train, train_labels, query_image, k)
 
         # Check if the prediction matches the true label
         if predicted_label == true_label:
