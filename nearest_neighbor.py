@@ -1,9 +1,7 @@
-from traceback import format_list
-
 from scipy.spatial.distance import cdist
 from sklearn.datasets import fetch_openml
 import numpy.random
-from scipy.spatial import distance
+import matplotlib.pyplot as plt
 
 # Fetch MNIST dataset
 mnist = fetch_openml('mnist_784', as_frame=False)
@@ -20,7 +18,7 @@ train_labels = labels[idx[:10000]]
 test = data[idx[10000:],:].astype('int')
 test_labels = labels[idx[10000:]]
 
-num_label_categories = 5
+num_label_categories = 10
 
 
 def knn_algo (train_images, labels_vec, query_img, k):
@@ -58,26 +56,48 @@ def test_knn():
     """
     Test the k-nearest neighbors algorithm
     """
+
     # Initialize counters
     correct_predictions = 0
+    accuracy_scores = []
 
     # Define k (e.g., k = 3)
-    k = 1
+    k=1
 
-    # Loop through each test image and predict its label
-    for i in range(len(test)):
-        query_image = test[i]
-        true_label = int(test_labels[i])
+    #define size of training array
+    n_arr = list(range(100, 5000, 100))
 
-        # Call the k-NN function
-        predicted_label = knn_algo(train, train_labels, query_image, k)
+    for n in n_arr:
 
-        # Check if the prediction matches the true label
-        if predicted_label == true_label:
-            correct_predictions += 1
+        train2 = train[:n]
+        train_labels2 = train_labels[:n]
+        # Loop through each test image and predict its label
+        for i in range(len(test)):
+            query_image = test[i]
+            true_label = int(test_labels[i])
 
-    # Calculate accuracy
-    accuracy = correct_predictions / len(test)
-    print(f"Accuracy: {accuracy * 100:.2f}%")
+            # Call the k-NN function
+            predicted_label = knn_algo(train2, train_labels2, query_image, k)
+
+            # Check if the prediction matches the true label
+            if predicted_label == true_label:
+                correct_predictions += 1
+
+        # Calculate accuracy
+        accuracy = correct_predictions / len(test)
+        accuracy_scores.append(accuracy)
+        #print(f"Accuracy: {accuracy * 100:.2f}%")
+        correct_predictions = 0
+
+ # Plot the results
+    plt.figure(figsize=(10, 6))
+    plt.plot(n_arr, accuracy_scores, marker='o', linestyle='-', color='b')
+    plt.title('Accuracy of k-NN for Different n Values')
+    plt.xlabel('n')
+    plt.ylabel('Accuracy')
+    plt.grid()
+    plt.show()
+
+
 
 test_knn()
